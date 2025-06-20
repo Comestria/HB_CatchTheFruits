@@ -2,16 +2,25 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.Events;
+using UnityEngine.UI;
+using TMPro;
 
 public class MB_PlayerController : MonoBehaviour
 {
     [SerializeField] private float score = 0f;
+
+    [Header("Speed Values")]
     [SerializeField] private float speed = 5f;
     [SerializeField] private float basespeed = 5f;
+
+    [Header("Dash Values")]
     [SerializeField] private float dashspeed = 9f;
     [SerializeField] private float TimerDash = 2f;
     [SerializeField] private float baseTimer = 2f;
     public UnityEvent HealthLoss;
+    public UnityEvent HealthGain;
+    public TextMeshProUGUI scoreText;
+    private Vector2 moveInput;
 
     private void Start()
     {
@@ -21,6 +30,8 @@ public class MB_PlayerController : MonoBehaviour
 
     void Update()
     {
+        scoreText.text = "Score: " + score;
+
         if (Input.GetKey(KeyCode.D))
         {
             transform.Translate(Vector3.right * Time.deltaTime * speed);
@@ -57,6 +68,12 @@ public class MB_PlayerController : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Trap"))
         {
             HealthLoss.Invoke();
+        }
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("BonusFruit"))
+        {
+            score += 3;
+            HealthGain.Invoke();
         }
     }
 }
